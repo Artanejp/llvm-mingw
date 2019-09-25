@@ -18,6 +18,15 @@ Clang on its own can also be used as compiler in the normal GNU binutils
 based environments though, so the main difference lies in replacing
 binutils with LLVM based tools.
 
+Artanejp's additional comment
+-----------------------------
+
+This is based on Ubuntu 18.10 "Cosmic".
+And, some tools also installed.
+
+-- Sep 25, 2019 K.Ohta.
+   
+
 Installation
 ------------
 
