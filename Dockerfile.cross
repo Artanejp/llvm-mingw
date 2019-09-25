@@ -18,7 +18,7 @@ RUN apt-get update -qq && \
 
 ARG CROSS_ARCH=x86_64
 ENV CROSS_TOOLCHAIN_PREFIX=/opt/llvm-mingw-$CROSS_ARCH
-
+ENV FORCE_THREADS=4
 ENV EXEEXT=.exe
 ENV HOST=$CROSS_ARCH-w64-mingw32
 
@@ -32,7 +32,7 @@ RUN ./strip-llvm.sh $CROSS_TOOLCHAIN_PREFIX
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 
 COPY build-mingw-w64.sh ./
-RUN ./build-mingw-w64.sh $CROSS_TOOLCHAIN_PREFIX --skip-include-triplet-prefix
+RUN ./build-mingw-w64.sh $CROSS_TOOLCHAIN_PREFIX --skip-include-triplet-prefix --build-threads $FORCE_THREADS
 
 COPY wrappers/*.sh wrappers/*.c wrappers/*.h ./wrappers/
 COPY install-wrappers.sh .
