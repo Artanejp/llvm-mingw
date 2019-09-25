@@ -6,7 +6,16 @@ if [ $# -lt 1 ]; then
     echo $0 dest
     exit 1
 fi
-PREFIX="$1"
+while [ $# -gt 0 ]; do
+    if [ "$1" = "--build-threads" ]; then
+	: ${CORES:=$2}
+	shift
+    else
+        PREFIX="$1"
+	break
+    fi
+    shift
+done
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 export PATH=$PREFIX/bin:$PATH

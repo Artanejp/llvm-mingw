@@ -14,11 +14,15 @@ while [ $# -gt 0 ]; do
         BUILD_STATIC=
     elif [ "$1" = "--enable-static" ]; then
         BUILD_STATIC=1
+    elif [ "$1" = "--build-threads" ]; then
+	: ${CORES:=$2}
+	shift
     else
         PREFIX="$1"
     fi
     shift
 done
+
 if [ -z "$PREFIX" ]; then
     echo $0 [--disable-shared] [--disable-static] dest
     exit 1

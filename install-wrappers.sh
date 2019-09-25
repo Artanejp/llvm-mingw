@@ -6,7 +6,9 @@ if [ $# -lt 1 ]; then
     echo $0 dest
     exit 1
 fi
+
 PREFIX="$1"
+
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 

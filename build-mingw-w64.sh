@@ -7,6 +7,11 @@ DEFAULT_MSVCRT=ucrt
 
 while [ $# -gt 0 ]; do
     case "$1" in
+    --build-threads)
+        : ${CORES:="$2"}
+	__NARG="--build-threads $2"
+	shift
+	;;
     --skip-include-triplet-prefix)
         SKIP_INCLUDE_TRIPLET_PREFIX=1
         ;;

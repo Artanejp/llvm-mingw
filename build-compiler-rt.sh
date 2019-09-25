@@ -10,6 +10,9 @@ while [ $# -gt 0 ]; do
         SRC_DIR=..
         BUILD_SUFFIX=-sanitizers
         SANITIZERS=1
+    elif [ "$1" = "--build-threads" ]; then
+	: ${CORES:=$2}
+	shift
     else
         PREFIX="$1"
     fi

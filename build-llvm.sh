@@ -4,6 +4,8 @@ set -e
 
 ASSERTS=OFF
 BUILDDIR=build
+FORCE_THREADS=OFF
+OVERRIDE_THREADS=0
 
 while [ $# -gt 0 ]; do
     if [ "$1" = "--disable-asserts" ]; then
@@ -14,18 +16,24 @@ while [ $# -gt 0 ]; do
         BUILDDIR=build-asserts
     elif [ "$1" = "--full-llvm" ]; then
         FULL_LLVM=1
+    elif [ "$1" = "--build-threads" ]; then
+        FORCE_THREADS=ON
+	OVERRIDE_THREADS="$2"
+	: ${CORES:="$2"}
+	shift
     else
         PREFIX="$1"
     fi
     shift
 done
+
+mkdir -p "$PREFIX"
+PREFIX="$(cd "$PREFIX" && pwd)"
+
 if [ -z "$PREFIX" ]; then
     echo $0 [--enable-asserts] [--full-llvm] dest
     exit 1
 fi
-
-mkdir -p "$PREFIX"
-PREFIX="$(cd "$PREFIX" && pwd)"
 
 : ${CORES:=$(nproc 2>/dev/null)}
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
