@@ -8,7 +8,9 @@ RUN apt-get update -qq && apt-get install -qqy --no-install-recommends \
     automake yasm gettext autopoint vim python ninja-build subversion \
     cmake cmake-curses-gui mingw-w64-tools binutils-mingw-w64 \
     pkg-config sudo openssh-client openssh-server p7zip-full pixz \
-    nano jed locales mc wget yasm nasm \
+    lftp ncftp nano jed locales mc less lv \
+    wget yasm nasm \
+    libz-mingw-w64 libz-mingw-w64-dev win-iconv-mingw-w64-dev \
     ca-certificates && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
