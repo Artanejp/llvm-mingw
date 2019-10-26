@@ -21,10 +21,12 @@ binutils with LLVM based tools.
 Artanejp's additional comment
 -----------------------------
 
-This is based on Ubuntu 18.10 "Cosmic".
+This is based on Ubuntu 19.10 "Cosmic".
 And, some tools also installed.
+DockeHub's repository is below:
+https://cloud.docker.com/u/artanejp/repository/docker/artanejp/mingw-w64-llvm-ubuntu19.10
 
--- Sep 25, 2019 K.Ohta.
+-- Oct 26, 2019 K.Ohta.
    
 
 Installation
