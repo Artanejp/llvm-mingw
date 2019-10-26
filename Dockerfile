@@ -1,4 +1,4 @@
-FROM ubuntu:18.10
+FROM ubuntu:19.10
 #FROM ubuntu:16.04
 
 ENV FORCE_THREADS=4
@@ -11,6 +11,7 @@ RUN apt-get update -qq && apt-get install -qqy --no-install-recommends \
     lftp ncftp nano jed locales mc less lv \
     wget yasm nasm \
     libz-mingw-w64 libz-mingw-w64-dev win-iconv-mingw-w64-dev \
+    ccache aptitude vim emacs \
     ca-certificates && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
