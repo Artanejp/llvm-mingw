@@ -1,8 +1,9 @@
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 #FROM ubuntu:16.04
 
 ENV FORCE_THREADS=4
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq && apt-get install -qqy --no-install-recommends \
     git wget bzip2 file unzip libtool pkg-config cmake build-essential \
     automake yasm gettext autopoint vim python ninja-build subversion \

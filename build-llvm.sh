@@ -48,7 +48,7 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
     [ -z "$SYNC" ] || git fetch
-    git checkout llvmorg-9.0.0
+    git checkout llvmorg-10.0.0
     cd ..
 fi
 
