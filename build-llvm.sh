@@ -21,13 +21,16 @@ while [ $# -gt 0 ]; do
 	OVERRIDE_THREADS="$2"
 	: ${CORES:="$2"}
 	shift
+    elif [ "$1" = "--llvm-version" ]; then
+        LLVM_VERSION="$2"
+	shift
     else
         PREFIX="$1"
     fi
     shift
 done
 
-mkdir -p "$PREFIX"
+ mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
 
 if [ -z "$PREFIX" ]; then
@@ -48,16 +51,16 @@ fi
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     cd llvm-project
     [ -z "$SYNC" ] || git fetch
-    git checkout llvmorg-10.0.0
+    git checkout ${LLVM_VERSION}
     cd ..
 fi
 
 [ -z "$CHECKOUT_ONLY" ] || exit 0
 
-if [ -n "$(which ninja)" ]; then
-    CMAKE_GENERATOR="Ninja"
-    NINJA=1
-else
+#if [ -n "$(which ninja)" ]; then
+#    CMAKE_GENERATOR="Ninja"
+#    NINJA=1
+#else
     case $(uname) in
     MINGW*)
         CMAKE_GENERATOR="MSYS Makefiles"
@@ -65,7 +68,7 @@ else
     *)
         ;;
     esac
-fi
+#fi
 
 if [ -n "$HOST" ]; then
     find_native_tools() {
@@ -153,8 +156,10 @@ cmake \
     $CMAKEFLAGS \
     ..
 
-if [ -n "$NINJA" ]; then
-    ninja -j$CORES install/strip
-else
-    make -j$CORES install/strip
-fi
+#if [ -n "$NINJA" ]; then
+#    ninja -j$CORES
+#     ninja -j$CORES install/strip
+#else
+#    make -j$CORES 
+     make -j$CORES install/strip
+#fi

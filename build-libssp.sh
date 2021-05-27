@@ -25,13 +25,13 @@ export PATH=$PREFIX/bin:$PATH
 : ${CORES:=4}
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64}}
 
-if [ ! -d libssp ]; then
-    svn checkout -q svn://gcc.gnu.org/svn/gcc/tags/gcc_7_3_0_release/libssp
+if [ ! -d gcc-libssp/libssp ]; then
+    git clone https://gcc.gnu.org/git/gcc.git gcc-libssp
+#    svn checkout -q svn://gcc.gnu.org/svn/gcc/tags/gcc_7_3_0_release/libssp
 fi
-
-cp libssp-Makefile libssp/Makefile
-
-cd libssp
+cd gcc-libssp/libssp
+git checkout releases/gcc-10.3.0
+cp ../../libssp-Makefile ./Makefile
 
 # gcc/libssp's configure script runs checks for flags that clang doesn't
 # implement. We actually just need to set a few HAVE defines and compile
