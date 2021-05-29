@@ -75,7 +75,6 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -87,6 +86,8 @@ build_all() {
             -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
             -DCXX_SUPPORTS_CXX11=TRUE \
             -DCXX_SUPPORTS_CXX_STD=TRUE \
+            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
+            -DLIBUNWIND_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
             -DLIBUNWIND_USE_COMPILER_RT=TRUE \
             -DLIBUNWIND_ENABLE_THREADS=TRUE \
             -DLIBUNWIND_ENABLE_SHARED=$SHARED \
@@ -124,7 +125,6 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -134,22 +134,29 @@ build_all() {
             -DLLVM_COMPILER_CHECKED=TRUE \
             -DCMAKE_AR=$PREFIX/bin/llvm-ar \
             -DCMAKE_RANLIB=$PREFIX/bin/llvm-ranlib \
+            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
+            -DLIBCXXABI_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
             -DLIBCXXABI_USE_COMPILER_RT=ON \
             -DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
             -DLIBCXXABI_ENABLE_THREADS=ON \
             -DLIBCXXABI_TARGET_TRIPLE=$arch-w64-mingw32 \
-            -DLIBCXXABI_ENABLE_SHARED=OFF \
+            -DLIBCXXABI_ENABLE_SHARED=$SHARED \
+            -DLIBCXXABI_ENABLE_STATIC=$STATIC \
+            -DLIBCXXABI_ENABLE_NEW_DELETE_DEFINITIONS=ON \
+	    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
             -DLIBCXXABI_LIBCXX_INCLUDES=../../libcxx/include \
             -DLIBCXXABI_LIBDIR_SUFFIX="" \
-            -DLIBCXXABI_ENABLE_NEW_DELETE_DEFINITIONS=ON \
-            -DCXX_SUPPORTS_CXX_STD=TRUE \
-            -DCMAKE_CXX_FLAGS="$LIBCXXABI_VISIBILITY_FLAGS -D_LIBCPP_HAS_THREAD_API_WIN32" \
             ..
         make -j$CORES
+        make install
+        if [ "$type" = "shared" ]; then
+            mkdir -p $PREFIX/$arch-w64-mingw32/bin
+            cp lib/libc++abi.dll $PREFIX/$arch-w64-mingw32/bin
+	fi    
         cd ..
     done
     cd ..
-
+    
     cd libcxx
     for arch in $ARCHS; do
         mkdir -p build-$arch-$type
@@ -162,7 +169,6 @@ build_all() {
         cmake \
             ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32 \
             -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang \
             -DCMAKE_CXX_COMPILER=$arch-w64-mingw32-clang++ \
             -DCMAKE_CROSSCOMPILING=TRUE \
@@ -180,15 +186,18 @@ build_all() {
             -DLIBCXX_ENABLE_MONOTONIC_CLOCK=ON \
             -DLIBCXX_ENABLE_SHARED=$SHARED \
             -DLIBCXX_ENABLE_STATIC=$STATIC \
+	    -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=$STATIC \
             -DLIBCXX_SUPPORTS_STD_EQ_CXX11_FLAG=TRUE \
             -DLIBCXX_HAVE_CXX_ATOMICS_WITHOUT_LIB=TRUE \
             -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
             -DLIBCXX_ENABLE_FILESYSTEM=OFF \
-            -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=TRUE \
+             -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
+            -DLIBCXX_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
             -DLIBCXX_CXX_ABI=libcxxabi \
             -DLIBCXX_CXX_ABI_INCLUDE_PATHS=../../libcxxabi/include \
             -DLIBCXX_CXX_ABI_LIBRARY_PATH=../../libcxxabi/build-$arch-$type/lib \
             -DLIBCXX_LIBDIR_SUFFIX="" \
+            -DLIBCXX_ENABLE_NEW_DELETE_DEFINITIONS=OFF \
             -DLIBCXX_INCLUDE_TESTS=FALSE \
             -DCMAKE_CXX_FLAGS="$LIBCXX_VISIBILITY_FLAGS" \
             -DCMAKE_SHARED_LINKER_FLAGS="-lunwind" \
@@ -196,19 +205,14 @@ build_all() {
             ..
         make -j$CORES
         make install
-        if [ "$type" = "shared" ]; then
-            llvm-ar qcsL \
-                $PREFIX/$arch-w64-mingw32/lib/libc++.dll.a \
-                $PREFIX/$arch-w64-mingw32/lib/libunwind.dll.a
-            cp lib/libc++.dll $PREFIX/$arch-w64-mingw32/bin
-        else
-            llvm-ar qcsL \
-                $PREFIX/$arch-w64-mingw32/lib/libc++.a \
-                $PREFIX/$arch-w64-mingw32/lib/libunwind.a
-        fi
+#        if [ "$type" = "shared" ]; then
+#            mkdir -p $PREFIX/$arch-w64-mingw32/bin
+#            cp lib/libc++.dll $PREFIX/$arch-w64-mingw32/bin
+#	fi    
         cd ..
     done
     cd ..
+
 }
 
 # Build shared first and static afterwards; the headers for static linking also
