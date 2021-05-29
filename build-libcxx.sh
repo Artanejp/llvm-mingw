@@ -137,7 +137,7 @@ build_all() {
             -DCMAKE_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
             -DLIBCXXABI_INSTALL_PREFIX=$PREFIX/$arch-w64-mingw32/ \
             -DLIBCXXABI_USE_COMPILER_RT=ON \
-            -DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
+            -DLIBCXXABI_ENABLE_EXCEPTIONS=OFF \
             -DLIBCXXABI_ENABLE_THREADS=ON \
             -DLIBCXXABI_TARGET_TRIPLE=$arch-w64-mingw32 \
             -DLIBCXXABI_ENABLE_SHARED=$SHARED \
