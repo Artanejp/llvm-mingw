@@ -2,9 +2,11 @@ FROM ubuntu:20.04
 #FROM ubuntu:16.04
 
 ENV FORCE_THREADS=6
-ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw-12
+#ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw-12
+ENV TOOLCHAIN_PREFIX=/opt/llvm-mingw-11
 ENV TOOLCHAIN_TARGET_OSES="mingw32 mings32uwp"
-ENV LLVM_VER=llvmorg-12.0.0
+#ENV LLVM_VER=llvmorg-12.0.0
+ENV LLVM_VER=release/11.x
 ENV ROOT_WORK_DIR=/build
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -65,10 +67,13 @@ RUN ${SCRIPT_ROOT_DIR}/install-wrappers.sh $TOOLCHAIN_PREFIX
 
 ENV PATH=${TOOLCHAIN_PREFIX}/bin:$PATH
 
+		     
 WORKDIR ${BUILD_ROOT_DIR}/build
 RUN ${SCRIPT_ROOT_DIR}/build-mingw-w64.sh \
                      --build-threads $FORCE_THREADS \
                      $TOOLCHAIN_PREFIX
+
+		     
 
 WORKDIR ${BUILD_ROOT_DIR}
 RUN ${SCRIPT_ROOT_DIR}/build-compiler-rt.sh \
@@ -90,11 +95,12 @@ RUN ${SCRIPT_ROOT_DIR}/build-compiler-rt.sh \
                     --build-threads $FORCE_THREADS \
                     $TOOLCHAIN_PREFIX
 
+
 WORKDIR ${BUILD_ROOT_DIR}/build
 COPY build-libssp.sh libssp-Makefile ${BUILD_ROOT_DIR}/build/
 RUN ${SCRIPT_ROOT_DIR}/build-libssp.sh \
                      --build-threads $FORCE_THREADS \
                      $TOOLCHAIN_PREFIX
-
-RUN  rm -rf ${ROOT_WORK_DIR}/
+		     
+#RUN  rm -rf ${ROOT_WORK_DIR}/
 
