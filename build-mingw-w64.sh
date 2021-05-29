@@ -59,7 +59,8 @@ cd mingw-w64
 
 if [ -n "$SYNC" ] || [ -n "$CHECKOUT" ]; then
     [ -z "$SYNC" ] || git fetch
-    git checkout 0a1d495478d8ed1a94fc77b9dbb428b7e0372588
+    git checkout v8.x
+#    git checkout 0a1d495478d8ed1a94fc77b9dbb428b7e0372588
 fi
 
 # If crosscompiling the toolchain itself, we already have a mingw-w64
